@@ -8,28 +8,30 @@ import styles from '../styles/diary.module.css'
 export default function DiaryPage() {
   const router = useRouter()
   const [text, setText] = useState('')
-  const [selectedDate, setSelectedDate] = useState(getToday())
+  const [selectedDate, setSelectedDate] = useState('')
   const [allEntries, setAllEntries] = useState<{ [date: string]: string }>({})
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
+
     const password = getSavedPassword()
     if (!password) {
       router.push('/login')
     }
 
+    const today = new Date().toISOString().split('T')[0]
+    setSelectedDate(today)
+
     const stored = localStorage.getItem('diary-all-entries')
     if (stored) {
       const parsed = JSON.parse(stored)
       setAllEntries(parsed)
-      if (parsed[selectedDate]) {
-        setText(parsed[selectedDate])
+      if (parsed[today]) {
+        setText(parsed[today])
       }
     }
-  }, [router, selectedDate])
-
-  function getToday() {
-    return new Date().toISOString().split('T')[0]
-  }
+  }, [router])
 
   function handleSave() {
     const updated = {
@@ -38,7 +40,7 @@ export default function DiaryPage() {
     }
     setAllEntries(updated)
     localStorage.setItem('diary-all-entries', JSON.stringify(updated))
-    alert('Saved successfully.')
+    alert('Salvo com sucesso!')
   }
 
   function handleSelectDate(date: string) {
@@ -47,6 +49,8 @@ export default function DiaryPage() {
   }
 
   const savedDates = Object.keys(allEntries).sort((a, b) => b.localeCompare(a))
+
+  if (!isMounted) return null
 
   return (
     <main className={styles.container}>
