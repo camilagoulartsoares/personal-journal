@@ -2,83 +2,59 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getSavedPassword } from '../utils/auth'
 import styles from '../styles/diary.module.css'
 
-export default function DiaryPage() {
+export default function DiaryListPage() {
+  const [entries, setEntries] = useState<{ [date: string]: string }>({})
   const router = useRouter()
-  const [text, setText] = useState('')
-  const [selectedDate, setSelectedDate] = useState('')
-  const [allEntries, setAllEntries] = useState<{ [date: string]: string }>({})
-  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    setIsMounted(true)
-
-    const password = getSavedPassword()
-    if (!password) {
-      router.push('/login')
+    const saved = localStorage.getItem('diary-all-entries')
+    if (saved) {
+      setEntries(JSON.parse(saved))
     }
+  }, [])
 
-    const today = new Date().toISOString().split('T')[0]
-    setSelectedDate(today)
-
-    const stored = localStorage.getItem('diary-all-entries')
-    if (stored) {
-      const parsed = JSON.parse(stored)
-      setAllEntries(parsed)
-      if (parsed[today]) {
-        setText(parsed[today])
-      }
-    }
-  }, [router])
-
-  function handleSave() {
-    const updated = {
-      ...allEntries,
-      [selectedDate]: text
-    }
-    setAllEntries(updated)
-    localStorage.setItem('diary-all-entries', JSON.stringify(updated))
-    alert('Salvo com sucesso!')
+  function formatDateLabel(dateString: string) {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
   }
 
-  function handleSelectDate(date: string) {
-    setSelectedDate(date)
-    setText(allEntries[date] || '')
+  function handleClick(date: string) {
+    router.push(`/diary/${date}`)
   }
 
-  const savedDates = Object.keys(allEntries).sort((a, b) => b.localeCompare(a))
+  const sortedDates = Object.keys(entries).sort((a, b) => b.localeCompare(a))
 
-  if (!isMounted) return null
+  const last30Days = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    return d.toISOString().split('T')[0]
+  })
 
   return (
-    <main className={styles.container}>
-      <h1 className={styles.title}>My Journal</h1>
-
-      <div className={styles.sidebar}>
-        {savedDates.map((date) => (
-          <button
-            key={date}
-            className={`${styles.dateButton} ${selectedDate === date ? styles.active : ''}`}
-            onClick={() => handleSelectDate(date)}
-          >
-            {date}
-          </button>
+    <div className={styles.pageContainer}>
+      <h1 className={styles.title}>Meu Diário</h1>
+      <div className={styles.grid}>
+        {last30Days.map((date) => (
+          <div key={date} className={styles.card} onClick={() => handleClick(date)}>
+            <h3>{formatDateLabel(date)}</h3>
+            {entries[date] ? (
+              <>
+                <p>Entrada existente</p>
+                <p>{entries[date].slice(0, 100)}</p>
+              </>
+            ) : (
+              <p>Clique para escrever</p>
+            )}
+          </div>
         ))}
       </div>
-
-      <div className={styles.editor}>
-        <textarea
-          className={styles.textarea}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Write something..."
-        />
-        <button className={styles.saveButton} onClick={handleSave}>
-          Save
-        </button>
-      </div>
-    </main>
+    </div>
   )
 }
