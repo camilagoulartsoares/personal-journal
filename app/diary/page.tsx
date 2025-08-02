@@ -25,23 +25,41 @@ export default function DiaryListPage() {
     })
   }
 
+  function getAllDaysOfCurrentMonthOrdered() {
+    const now = new Date()
+    const today = now.toISOString().split('T')[0]
+    const year = now.getFullYear()
+    const month = now.getMonth()
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+
+    const past: string[] = []
+    const future: string[] = []
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const d = new Date(year, month, day)
+      const formatted = d.toISOString().split('T')[0]
+
+      if (formatted < today) {
+        past.push(formatted)
+      } else if (formatted > today) {
+        future.push(formatted)
+      }
+    }
+
+    return [today, ...past.reverse(), ...future]
+  }
+
   function handleClick(date: string) {
     router.push(`/diary/${date}`)
   }
 
-  const sortedDates = Object.keys(entries).sort((a, b) => b.localeCompare(a))
-
-  const last30Days = Array.from({ length: 30 }, (_, i) => {
-    const d = new Date()
-    d.setDate(d.getDate() - i)
-    return d.toISOString().split('T')[0]
-  })
+  const days = getAllDaysOfCurrentMonthOrdered()
 
   return (
     <div className={styles.pageContainer}>
       <h1 className={styles.title}>Meu Diário</h1>
       <div className={styles.grid}>
-        {last30Days.map((date) => (
+        {days.map((date) => (
           <div key={date} className={styles.card} onClick={() => handleClick(date)}>
             <h3>{formatDateLabel(date)}</h3>
             {entries[date] ? (
