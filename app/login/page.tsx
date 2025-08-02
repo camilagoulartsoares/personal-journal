@@ -6,76 +6,78 @@ import { savePassword, getSavedPassword } from '../utils/auth'
 import styles from '../styles/login.module.css'
 
 export default function LoginPage() {
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const router = useRouter()
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const router = useRouter()
 
-  const existing = getSavedPassword()
-  const isCreating = !existing
+    const existing = getSavedPassword()
+    const isCreating = !existing
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault()
 
-    if (isCreating) {
-      if (!password || !confirmPassword) {
-        alert('Preencha todos os campos')
-        return
-      }
+        if (isCreating) {
+            if (!password || !confirmPassword) {
+                alert('Preencha todos os campos')
+                return
+            }
 
-      if (password !== confirmPassword) {
-        alert('As senhas não coincidem.')
-        return
-      }
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem.')
+                return
+            }
 
-      savePassword(password)
-      router.push('/diary')
-    } else {
-      if (password === existing) {
-        router.push('/diary')
-      } else {
-        alert('Senha incorreta.')
-      }
+            await savePassword(password)
+            router.push('/diary')
+        } else {
+            const match = await isAuthenticated(password)
+            if (match) {
+                router.push('/diary')
+            } else {
+                alert('Senha incorreta.')
+            }
+        }
     }
-  }
 
-  return (
-    <div className={styles.page}>
-      <form className={styles.card} onSubmit={handleSubmit}>
-        <h1 className={styles.title}>
-          {isCreating ? 'Criar Senha' : 'Digite sua Senha'}
-        </h1>
-        <p className={styles.description}>
-          {isCreating
-            ? 'Defina uma senha para proteger seu diário.'
-            : 'Acesse seu diário com sua senha secreta.'}
-        </p>
 
-        <label className={styles.label}>Senha</label>
-        <input
-          type="password"
-          placeholder="Sua senha secreta"
-          className={styles.input}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+    return (
+        <div className={styles.page}>
+            <form className={styles.card} onSubmit={handleSubmit}>
+                <h1 className={styles.title}>
+                    {isCreating ? 'Criar Senha' : 'Digite sua Senha'}
+                </h1>
+                <p className={styles.description}>
+                    {isCreating
+                        ? 'Defina uma senha para proteger seu diário.'
+                        : 'Acesse seu diário com sua senha secreta.'}
+                </p>
 
-        {isCreating && (
-          <>
-            <label className={styles.label}>Confirmar Senha</label>
-            <input
-              type="password"
-              placeholder="Confirme sua senha"
-              className={styles.input}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </>
-        )}
+                <label className={styles.label}>Senha</label>
+                <input
+                    type="password"
+                    placeholder="Sua senha secreta"
+                    className={styles.input}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
 
-        <button type="submit" className={styles.button}>
-          {isCreating ? 'Criar Senha' : 'Entrar'}
-        </button>
-      </form>
-    </div>
-  )
+                {isCreating && (
+                    <>
+                        <label className={styles.label}>Confirmar Senha</label>
+                        <input
+                            type="password"
+                            placeholder="Confirme sua senha"
+                            className={styles.input}
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                    </>
+                )}
+
+                <button type="submit" className={styles.button}>
+                    {isCreating ? 'Criar Senha' : 'Entrar'}
+                </button>
+            </form>
+        </div>
+    )
 }
