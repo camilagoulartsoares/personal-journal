@@ -53,25 +53,36 @@ export default function DiaryListPage() {
     router.push(`/diary/${date}`)
   }
 
+  const today = new Date().toISOString().split('T')[0]
   const days = getAllDaysOfCurrentMonthOrdered()
 
   return (
     <div className={styles.pageContainer}>
       <h1 className={styles.title}>Meu Diário</h1>
       <div className={styles.grid}>
-        {days.map((date) => (
-          <div key={date} className={styles.card} onClick={() => handleClick(date)}>
-            <h3>{formatDateLabel(date)}</h3>
-            {entries[date] ? (
-              <>
-                <p>Entrada existente</p>
-                <p>{entries[date].slice(0, 100)}</p>
-              </>
-            ) : (
-              <p>Clique para escrever</p>
-            )}
-          </div>
-        ))}
+        {days.map((date) => {
+          const isToday = date === today
+          const hasEntry = !!entries[date]
+
+          return (
+            <div
+              key={date}
+              className={`${styles.card} ${isToday ? styles.today : ''} ${hasEntry ? styles.hasEntry : ''}`}
+              onClick={() => handleClick(date)}
+            >
+              <h3>{formatDateLabel(date)}</h3>
+              {hasEntry ? (
+                <>
+                  <p>Entrada existente</p>
+                  <p>{entries[date].slice(0, 100)}</p>
+                </>
+              ) : (
+                <p>Clique para escrever</p>
+              )}
+
+            </div>
+          )
+        })}
       </div>
     </div>
   )
