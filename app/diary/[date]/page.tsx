@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import styles from '../../styles/diary-entry.module.css'
 import { toast } from 'react-toastify'
@@ -9,6 +9,13 @@ export default function DiaryEntryPage() {
   const { date } = useParams()
   const router = useRouter()
   const [text, setText] = useState('')
+  const isMounted = useRef(true)
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
 
   useEffect(() => {
     if (typeof date === 'string') {
@@ -42,15 +49,17 @@ export default function DiaryEntryPage() {
     }
 
     localStorage.setItem('diary-all-entries', JSON.stringify(updated))
-  toast.success('Entrada salva com sucesso!')
+
+    if (isMounted.current) {
+      toast.success('Entrada salva com sucesso!')
+    }
   }
 
   if (typeof date !== 'string') return null
 
   return (
     <div className={styles.wrapper}>
-   <h1 className={styles.title}>{formatDateLabel(date)}</h1>
-
+      <h1 className={styles.title}>{formatDateLabel(date)}</h1>
 
       <button className={styles.backButton} onClick={() => router.push('/diary')}>
         Voltar ao Diário
