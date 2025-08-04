@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { savePassword, getSavedPassword } from '../utils/auth'
+import { savePassword, getSavedPassword, isAuthenticated } from '../utils/auth'
 import styles from '../styles/login.module.css'
 
 export default function LoginPage() {
