@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import styles from '../../styles/diary-entry.module.css'
 import { toast } from 'react-toastify'
+import { salvarEntrada, buscarEntrada } from '../../utils/indexedDb'
 
 export default function DiaryEntryPage() {
   const { date } = useParams()
@@ -11,19 +12,21 @@ export default function DiaryEntryPage() {
   const [text, setText] = useState('')
   const isMounted = useRef(true)
 
-  useEffect(() => {
-    return () => {
-      isMounted.current = false
-    }
-  }, [])
+useEffect(() => {
+  isMounted.current = true
+  return () => {
+    isMounted.current = false
+  }
+}, [])
+
 
   useEffect(() => {
     if (typeof date === 'string') {
-      const saved = localStorage.getItem('diary-all-entries')
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        setText(parsed[date] || '')
-      }
+      buscarEntrada(date).then((entrada) => {
+        if (entrada) {
+          setText(entrada.texto)
+        }
+      })
     }
   }, [date])
 
@@ -40,19 +43,11 @@ export default function DiaryEntryPage() {
   function handleSave() {
     if (typeof date !== 'string') return
 
-    const saved = localStorage.getItem('diary-all-entries')
-    const entries = saved ? JSON.parse(saved) : {}
-
-    const updated = {
-      ...entries,
-      [date]: text
-    }
-
-    localStorage.setItem('diary-all-entries', JSON.stringify(updated))
-
-    if (isMounted.current) {
-      toast.success('Entrada salva com sucesso!')
-    }
+    salvarEntrada({ id: date, texto: text }).then(() => {
+      if (isMounted.current) {
+        toast.success('Entrada salva com sucesso!')
+      }
+    })
   }
 
   if (typeof date !== 'string') return null

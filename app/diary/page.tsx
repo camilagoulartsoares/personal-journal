@@ -3,16 +3,16 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import styles from '../styles/diary.module.css'
+import { buscarTodasEntradas } from '../utils/indexedDb'
 
 export default function DiaryListPage() {
   const [entries, setEntries] = useState<{ [date: string]: string }>({})
   const router = useRouter()
 
   useEffect(() => {
-    const saved = localStorage.getItem('diary-all-entries')
-    if (saved) {
-      setEntries(JSON.parse(saved))
-    }
+    buscarTodasEntradas().then((todas) => {
+      setEntries(todas)
+    })
   }, [])
 
   function formatDateLabel(dateString: string) {
@@ -79,7 +79,6 @@ export default function DiaryListPage() {
               ) : (
                 <p>Clique para escrever</p>
               )}
-
             </div>
           )
         })}
