@@ -29,7 +29,6 @@ export const salvarEntrada = async (entrada: { id: string; texto: string }) => {
   console.log('Entrada salva com sucesso:', entrada)
 }
 
-
 export const buscarEntrada = async (id: string) => {
   const db = await initDB()
   return db.get(STORE_NAME, id)
