@@ -1,110 +1,109 @@
 .wrapper {
   max-width: 800px;
   margin: 2rem auto;
-  padding: 2.5rem; /* Increased padding */
-  background: #ffffff; /* Pure white background */
-  border-radius: 16px; /* Slightly more rounded corners */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05); /* Enhanced shadow */
-  font-family: 'Inter', sans-serif; /* Modern font */
+  padding: 2.5rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* Add gap for consistent spacing */
+  gap: 1.5rem;
 }
 
 .title {
-  font-size: 2rem; /* Slightly larger title */
-  font-weight: 700; /* Bolder */
-  margin-bottom: 0.5rem; /* Adjusted margin */
-  color: #1a202c; /* Darker, more prominent color */
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1a202c;
   line-height: 1.2;
   word-break: break-word;
-  text-align: center; /* Center align title */
+  text-align: center;
 }
 
 .label {
-  font-size: 0.95rem; /* Slightly smaller label */
+  font-size: 0.95rem;
   margin-bottom: 0.5rem;
-  color: #4a5568; /* Softer gray for label */
+  color: #4a5568;
   font-weight: 500;
 }
 
 .textarea {
   width: 100%;
   height: 300px;
-  border-radius: 10px; /* Slightly more rounded textarea */
-  border: 1px solid #e2e8f0; /* Lighter border */
-  padding: 1.25rem; /* Increased padding */
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem;
   font-size: 1rem;
   margin-bottom: 1rem;
-  background: #f7fafc; /* Very light gray background */
-  color: #2d3748; /* Darker text color */
-  resize: none; /* Changed from vertical to none */
+  background: #f7fafc;
+  color: #2d3748;
+  resize: none;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .textarea:focus {
-  border-color: #63b3ed; /* Blue border on focus */
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3); /* Subtle blue glow on focus */
+  border-color: #63b3ed;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
 }
 
 .textarea::placeholder {
-  color: #a0aec0; /* Lighter placeholder color */
+  color: #a0aec0;
 }
 
 .saveButton {
-  background-color: #3182ce; /* Deeper blue */
+  background-color: #3182ce;
   color: white;
-  padding: 1rem 1.5rem; /* Larger padding */
-  font-weight: 600; /* Slightly less bold */
+  padding: 1rem 1.5rem;
+  font-weight: 600;
   border: none;
-  border-radius: 10px; /* More rounded */
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  font-size: 1.05rem; /* Slightly larger font */
-  box-shadow: 0 4px 10px rgba(49, 130, 206, 0.2); /* Subtle shadow for button */
+  font-size: 1.05rem;
+  box-shadow: 0 4px 10px rgba(49, 130, 206, 0.2);
 }
 
 .saveButton:hover {
-  background-color: #2b6cb0; /* Even deeper blue on hover */
-  transform: translateY(-2px); /* Slight lift effect */
-  box-shadow: 0 6px 15px rgba(49, 130, 206, 0.3); /* More pronounced shadow on hover */
+  background-color: #2b6cb0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(49, 130, 206, 0.3);
 }
 
 .backButton {
   margin-bottom: 1.5rem;
   background-color: transparent;
-  border: 1px solid #cbd5e0; /* Lighter border */
-  padding: 0.6rem 1.2rem; /* Adjusted padding */
+  border: 1px solid #cbd5e0;
+  padding: 0.6rem 1.2rem;
   border-radius: 8px;
   font-size: 0.9rem;
   cursor: pointer;
-  color: #4a5568; /* Softer text color */
+  color: #4a5568;
   align-self: flex-start;
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .backButton:hover {
-  background-color: #edf2f7; /* Light background on hover */
-  border-color: #a0aec0; /* Slightly darker border on hover */
-  color: #2d3748; /* Darker text on hover */
+  background-color: #edf2f7;
+  border-color: #a0aec0;
+  color: #2d3748;
 }
 
-/* Responsivo */
 @media (max-width: 600px) {
   .wrapper {
-    padding: 1.5rem; /* Adjusted padding for smaller screens */
+    padding: 1.5rem;
     margin: 1rem;
     border-radius: 12px;
   }
   .title {
-    font-size: 1.75rem; /* Adjusted font size */
+    font-size: 1.75rem;
   }
   .label {
     font-size: 0.9rem;
   }
   .textarea {
-    height: 200px; /* Slightly smaller height for mobile */
+    height: 200px;
     font-size: 0.95rem;
     padding: 1rem;
   }
