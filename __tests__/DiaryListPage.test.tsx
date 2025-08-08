@@ -1,12 +1,17 @@
-import { render, screen } from '@testing-library/react'
-import DiaryListPage from '../app/diary/page'
-import * as indexedDb from '../app/utils/indexedDb'
-import { useRouter } from 'next/navigation'
-
 // Mock do useRouter
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn()
 }))
+
+// Mock do módulo indexedDb
+jest.mock('../app/utils/indexedDb', () => ({
+  buscarTodasEntradas: jest.fn()
+}))
+
+import { buscarTodasEntradas } from '../app/utils/indexedDb'
+import { useRouter } from 'next/navigation'
+import { render, screen } from '@testing-library/react'
+import DiaryListPage from '../app/diary/page'
 
 describe('DiaryListPage', () => {
   beforeEach(() => {
@@ -15,8 +20,8 @@ describe('DiaryListPage', () => {
       push: jest.fn()
     })
 
-    // Mock da função buscarTodasEntradas
-    jest.spyOn(indexedDb, 'buscarTodasEntradas').mockResolvedValue({
+    // Mock inicial da função
+    ;(buscarTodasEntradas as jest.Mock).mockResolvedValue({
       '2025-08-01': 'Minha entrada de teste'
     })
   })
@@ -32,7 +37,7 @@ describe('DiaryListPage', () => {
   })
 
   it('mostra "Clique para escrever" se não tiver entrada', async () => {
-    ;(indexedDb.buscarTodasEntradas as jest.Mock).mockResolvedValue({})
+    ;(buscarTodasEntradas as jest.Mock).mockResolvedValue({})
     render(<DiaryListPage />)
     expect(await screen.findAllByText('Clique para escrever')).not.toHaveLength(0)
   })
