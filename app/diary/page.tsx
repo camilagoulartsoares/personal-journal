@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation'
 import styles from '../styles/diary.module.css'
 import { buscarTodasEntradas } from '../utils/indexedDb'
 
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+
 export default function DiaryListPage() {
   const [entries, setEntries] = useState<{ [date: string]: string }>({})
   const router = useRouter()
@@ -12,6 +15,13 @@ export default function DiaryListPage() {
   useEffect(() => {
     buscarTodasEntradas().then((todas) => {
       setEntries(todas)
+    })
+
+   
+    AOS.init({
+      duration: 800,  
+      easing: 'ease-out-cubic',
+      once: true      
     })
   }, [])
 
@@ -60,7 +70,7 @@ export default function DiaryListPage() {
     <div className={styles.pageContainer}>
       <h1 className={styles.title}>Meu Diário</h1>
       <div className={styles.grid}>
-        {days.map((date) => {
+        {days.map((date, index) => {
           const isToday = date === today
           const hasEntry = !!entries[date]
 
@@ -69,6 +79,8 @@ export default function DiaryListPage() {
               key={date}
               className={`${styles.card} ${isToday ? styles.today : ''} ${hasEntry ? styles.hasEntry : ''}`}
               onClick={() => handleClick(date)}
+              data-aos="fade-up"
+              data-aos-delay={index * 50} // efeito em cascata
             >
               <h3>{formatDateLabel(date)}</h3>
               {hasEntry ? (
